@@ -14,4 +14,8 @@ different methods will be called on the basis of GET, POST, PUT or DELETE JaxRS 
 
 @Path("/path") => used for url path
 @Produces(MediaType), @Consumes(MediaType) Used to denote consumption and production type
-@PathParam("/{variablePath}") Used for variable path
+@PathParam("paramName") Used for passing parameters
+@MatrixParam("paramName") Used for passing parameters
+@HeaderParam("headerParamName") used for passing custom headers
+@CookieParam("cookieName")
+@FormParam("formkeyName")
