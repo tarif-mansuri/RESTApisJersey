@@ -19,3 +19,28 @@ different methods will be called on the basis of GET, POST, PUT or DELETE JaxRS 
 @HeaderParam("headerParamName") used for passing custom headers
 @CookieParam("cookieName")
 @FormParam("formkeyName")
+@Contxt using @Context we can pass the objects of classes like UriInfo, HttpHeaders etc as Arguments
+
+
+if list of parameters getting bigger as shown in the below function of MessageResources class
+(this function's modified version will be available as of now)
+
+@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Message> getMessages(@QueryParam("year") int year,
+									 @QueryParam("year") int start,
+									 @QueryParam("year") int size) {
+		if(year > 0){
+			return messageService.getALlMessageForYear(year);
+		}
+		if(start>0 &&size>0){
+			return messageService.getAllMessagePaginated(start, size);
+		}
+		return messageService.getAllMessages();
+	}
+	
+	
+we can use @BeanParam
+1.create a class (we call it a bean class)
+2.put all parameters with annotations as member variables and generate getters and setters
+3.pass a single object of this class to the above function and access the desired param value
