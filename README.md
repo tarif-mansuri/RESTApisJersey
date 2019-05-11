@@ -44,3 +44,6 @@ we can use @BeanParam
 1.create a class (we call it a bean class)
 2.put all parameters with annotations as member variables and generate getters and setters
 3.pass a single object of this class to the above function and access the desired param value
+
+@XmlRootElement
+@XmlTransient
