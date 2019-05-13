@@ -13,7 +13,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -45,8 +44,10 @@ public class MessageResources {
 	@GET
 	@Path("/{messageId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Message getMessage(@PathParam("messageId") long id) {
-		return messageService.getMessage(id);
+	public Message getMessage(@PathParam("messageId") long id, @Context UriInfo uriInfo) {
+		Message message = messageService.getMessage(id);
+		getUirForSelf(uriInfo, message);
+		return message;
 	}
 
 	@POST
@@ -54,15 +55,13 @@ public class MessageResources {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response addMessage(Message message, @Context UriInfo uriInfo) {
 		/**
-		 * the crux part, if dont understand watch the 26th video of Jax-RS
-		 * from java brain
+		 * the crux part, if dont understand watch the 26th video of Jax-RS from
+		 * java brain
 		 */
 		Message newMessage = messageService.addMessage(message);
 		UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder().path(String.valueOf(newMessage.getId()));
 		URI uri = uriBuilder.build();
-		return Response.created(uri) 
-				.status(Status.CREATED)
-		        .entity(newMessage).build();
+		return Response.created(uri).status(Status.CREATED).entity(newMessage).build();
 	}
 
 	@PUT
@@ -79,6 +78,12 @@ public class MessageResources {
 	@Path("/{messageId}")
 	public Message deleteMessage(@PathParam("messageId") long id) {
 		return messageService.removeMessage(id);
+	}
+
+	private void getUirForSelf(UriInfo uriInfo, Message message) {
+		String uri = uriInfo.getBaseUriBuilder().path(MessageResources.class).path(Long.toString(message.getId()))
+				.build().toString();
+		message.addLink(uri, "self");
 	}
 
 }
