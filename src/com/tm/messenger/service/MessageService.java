@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.tm.messenger.database.DatabaseClass;
+import com.tm.messenger.exception.DataNotFoundException;
 import com.tm.messenger.model.Message;
 
 public class MessageService {
@@ -23,7 +24,11 @@ public class MessageService {
 	}
 
 	public Message getMessage(long id) {
-		return messages.get(id);
+		Message message = messages.get(id);
+		if (message == null) {
+			throw new DataNotFoundException("Message with id : " + id + " not found");
+		}
+		return message;
 	}
 
 	public Message addMessage(Message message) {
@@ -43,24 +48,24 @@ public class MessageService {
 	public Message removeMessage(long id) {
 		return messages.remove(id);
 	}
-	
-	public List<Message> getALlMessageForYear(int year){
+
+	public List<Message> getALlMessageForYear(int year) {
 		List<Message> messageForYear = new ArrayList<>();
 		Calendar calendar = Calendar.getInstance();
-		for(Message message : messages.values()){
+		for (Message message : messages.values()) {
 			calendar.setTime(message.getCreated());
-			if(calendar.get(Calendar.YEAR)== year){
+			if (calendar.get(Calendar.YEAR) == year) {
 				messageForYear.add(message);
 			}
 		}
 		return messageForYear;
 	}
-	
-	public List<Message> getAllMessagePaginated(int start, int size){
+
+	public List<Message> getAllMessagePaginated(int start, int size) {
 		List<Message> list = new ArrayList<Message>(messages.values());
-		if(start+size >list.size()){
+		if (start + size > list.size()) {
 			return new ArrayList<Message>();
 		}
-		return list.subList(start, start+size);
+		return list.subList(start, start + size);
 	}
 }
